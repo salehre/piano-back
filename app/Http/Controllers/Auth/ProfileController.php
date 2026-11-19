@@ -15,6 +15,14 @@ class ProfileController extends Controller
     {
         $input = $request->json()->all();
 
+        // میان‌افزار ConvertEmptyStringsToNull لاراول رشته‌ی خالی رو توی بدنه‌ی JSON هم null می‌کنه؛
+        // برای فیلدهای متنی null یعنی همون «خالی» (''). (نوع اشتباه مثل آرایه همچنان رد می‌شه)
+        foreach (['displayName', 'email', 'avatar', 'nationalId', 'country', 'address'] as $field) {
+            if (array_key_exists($field, $input) && $input[$field] === null) {
+                $input[$field] = '';
+            }
+        }
+
         if ($error = AuthRules::validateProfile($input)) {
             return ApiError::response($error, 422);
         }
