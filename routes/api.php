@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\LearningController;
 use App\Http\Controllers\Api\LibraryController;
 use App\Http\Controllers\Api\PlanController;
+use App\Http\Controllers\Api\PracticeController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -41,6 +42,12 @@ Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
     Route::put('learning/lessons/{lessonId}', [LearningController::class, 'completeLesson'])->where('lessonId', '[A-Za-z0-9_\-]{1,60}');
     Route::post('learning/ear-rounds', [LearningController::class, 'earRound']);
     Route::post('learning/merge', [LearningController::class, 'merge']);
+
+    // تمرین روزانه (زمان هر روز، XP، هدف، نشان‌ها، شمارنده‌ها، یادآور)
+    Route::get('practice', [PracticeController::class, 'index']);
+    Route::put('practice/days/{day}', [PracticeController::class, 'storeDay'])->where('day', '\d{4}-\d{2}-\d{2}');
+    Route::put('practice/meta', [PracticeController::class, 'storeMeta']);
+    Route::post('practice/merge', [PracticeController::class, 'merge']);
 
     // آهنگ‌های واردشده
     Route::get('library/songs', [LibraryController::class, 'index']);
