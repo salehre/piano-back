@@ -18,10 +18,15 @@ trait ActsAsSpa
         return User::create(['phone' => $phone, 'password' => 'secret123']);
     }
 
-    /** وارد‌شده به‌عنوان این کاربر؛ گاردهای کش‌شده رو فراموش می‌کنه تا با عوض‌کردن کاربر وسط تست، کاربر قبلی روی گارد sanctum باقی نمونه */
+    /**
+     * وارد‌شده به‌عنوان این کاربر؛ گاردهای کش‌شده رو فراموش می‌کنه تا با عوض‌کردن کاربر وسط تست، کاربر قبلی روی گارد sanctum باقی نمونه.
+     * نشست هم خالی می‌شه: توی تست‌ها store نشست بین درخواست‌ها زنده می‌مونه و middleware AuthenticateSession
+     * هش رمز کاربر قبلی رو توش نگه می‌داره؛ با کاربر جدید نمی‌خونه و درخواست 401 می‌گیره.
+     */
     protected function actAs(User $user): static
     {
         $this->app['auth']->forgetGuards();
+        $this->app['session']->driver()->flush();
 
         return $this->actingAs($user, 'web');
     }

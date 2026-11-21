@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\LearningController;
 use App\Http\Controllers\Api\LibraryController;
+use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -30,6 +31,10 @@ Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
     // علاقه‌مندی‌ها
     Route::get('favorites', [FavoriteController::class, 'index']);
     Route::patch('favorites', [FavoriteController::class, 'update']);
+
+    // پلن (رایگان / پریمیوم) و دوره‌ی آزمایشی
+    Route::get('plan', [PlanController::class, 'show']);
+    Route::post('plan/trial', [PlanController::class, 'startTrial']);
 
     // مسیر یادگیری و تمرین گوش
     Route::get('learning', [LearningController::class, 'index']);
