@@ -27,5 +27,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('auth-lookup', fn (Request $request) => Limit::perMinute(20)->by((string) $request->ip()));
 
         RateLimiter::for('auth-register', fn (Request $request) => Limit::perHour(10)->by((string) $request->ip()));
+
+        // داده‌ی کاربر وارد‌شده (امتیاز، علاقه‌مندی، آهنگ‌ها): ۳۰۰ درخواست در دقیقه برای هر کاربر
+        RateLimiter::for('user-data', fn (Request $request) => Limit::perMinute(300)->by((string) ($request->user()?->id ?? $request->ip())));
     }
 }

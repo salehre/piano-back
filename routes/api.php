@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\LibraryController;
+use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -14,4 +17,21 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::put('profile', [ProfileController::class, 'update'])->middleware('auth:sanctum');
+});
+
+// داده‌ی کاربر وارد‌شده
+Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
+    // امتیاز آهنگ‌ها
+    Route::get('progress/scores', [ProgressController::class, 'index']);
+    Route::put('progress/scores', [ProgressController::class, 'store']);
+    Route::post('progress/scores/merge', [ProgressController::class, 'merge']);
+
+    // علاقه‌مندی‌ها
+    Route::get('favorites', [FavoriteController::class, 'index']);
+    Route::patch('favorites', [FavoriteController::class, 'update']);
+
+    // آهنگ‌های واردشده
+    Route::get('library/songs', [LibraryController::class, 'index']);
+    Route::put('library/songs/{songId}', [LibraryController::class, 'upsert'])->where('songId', '[A-Za-z0-9_\-]{1,100}');
+    Route::delete('library/songs/{songId}', [LibraryController::class, 'destroy'])->where('songId', '[A-Za-z0-9_\-]{1,100}');
 });
