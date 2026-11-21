@@ -86,7 +86,7 @@ final class ScoreRules
     }
 
     /** زمان نامعتبر یا آینده‌ی دور رو با «الان» عوض می‌کنه (ساعت دستگاه کاربر قابل‌اعتماد نیست) */
-    private static function normalizeAt(mixed $at, ?DateTimeImmutable $now): string
+    public static function normalizeAt(mixed $at, ?DateTimeImmutable $now): string
     {
         $utc = new DateTimeZone('UTC');
         $now ??= new DateTimeImmutable('now', $utc);

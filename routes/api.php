@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\LearningController;
 use App\Http\Controllers\Api\LibraryController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Auth\AuthController;
@@ -29,6 +30,12 @@ Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
     // علاقه‌مندی‌ها
     Route::get('favorites', [FavoriteController::class, 'index']);
     Route::patch('favorites', [FavoriteController::class, 'update']);
+
+    // مسیر یادگیری و تمرین گوش
+    Route::get('learning', [LearningController::class, 'index']);
+    Route::put('learning/lessons/{lessonId}', [LearningController::class, 'completeLesson'])->where('lessonId', '[A-Za-z0-9_\-]{1,60}');
+    Route::post('learning/ear-rounds', [LearningController::class, 'earRound']);
+    Route::post('learning/merge', [LearningController::class, 'merge']);
 
     // آهنگ‌های واردشده
     Route::get('library/songs', [LibraryController::class, 'index']);
