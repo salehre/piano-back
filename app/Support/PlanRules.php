@@ -19,7 +19,7 @@ final class PlanRules
     public const SOURCES = ['trial', 'purchase'];
 
     /** سقف تعداد ضبط‌های ذخیره‌شده؛ همون limits.recordings توی utils/plans.ts فرانت */
-    public const RECORDINGS_FREE = 3;
+    public const RECORDINGS_FREE = 7;
 
     public const RECORDINGS_PREMIUM = 30;
 

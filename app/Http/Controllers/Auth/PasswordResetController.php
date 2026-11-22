@@ -88,7 +88,7 @@ class PasswordResetController extends Controller
             return ApiError::response(AuthRules::ref('auth.errors.tooManyRequests'), 429);
         }
         if ($outcome !== 'ok') {
-            return ApiError::response(AuthRules::ref($outcome === 'expired' ? 'auth.errors.codeExpired' : 'auth.errors.codeIncorrect'), 422);
+            return ApiError::response(AuthRules::ref($outcome === 'expired' ? 'auth.errors.codeExpired' : 'auth.errors.wrongCode'), 422);
         }
 
         $user = User::where('phone', $phone)->first();

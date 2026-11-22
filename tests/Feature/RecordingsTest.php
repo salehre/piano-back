@@ -162,13 +162,13 @@ class RecordingsTest extends TestCase
     public function test_free_plan_limit_is_enforced_by_the_server(): void
     {
         $this->login();
-        foreach (['a', 'b', 'c'] as $id) {
-            $this->save($id, withAudio: false)->assertCreated();
+        for ($i = 1; $i <= 7; $i++) {
+            $this->save("rec-$i", withAudio: false)->assertCreated();
         }
 
-        $this->save('d')->assertStatus(409)->assertJsonPath('error.key', 'recordings.limit');
+        $this->save('rec-8')->assertStatus(409)->assertJsonPath('error.key', 'recordings.limit');
 
-        $this->assertDatabaseCount('recordings', 3);
+        $this->assertDatabaseCount('recordings', 7);
         $this->assertSame([], Storage::disk('local')->allFiles()); // صدای ضبط ردشده ذخیره نمی‌شه
     }
 
@@ -177,23 +177,23 @@ class RecordingsTest extends TestCase
         $user = $this->login();
         Subscription::create(['user_id' => $user->id, 'source' => 'purchase', 'expires_at' => now()->addDays(30)]);
 
-        for ($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             $this->save("rec-$i", withAudio: false)->assertCreated();
         }
-        $this->assertDatabaseCount('recordings', 4);
+        $this->assertDatabaseCount('recordings', 8);
     }
 
     public function test_expired_premium_keeps_recordings_but_blocks_new_ones(): void
     {
         $user = $this->login();
         Subscription::create(['user_id' => $user->id, 'source' => 'purchase', 'expires_at' => now()->addDay()]);
-        for ($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             $this->save("rec-$i", withAudio: false)->assertCreated();
         }
 
         $this->travel(2)->days();
 
-        $this->getJson('/api/recordings')->assertOk()->assertJsonCount(4, 'recordings');
+        $this->getJson('/api/recordings')->assertOk()->assertJsonCount(8, 'recordings');
         $this->save('new', withAudio: false)->assertStatus(409);
     }
 
@@ -227,12 +227,12 @@ class RecordingsTest extends TestCase
     public function test_deleting_frees_a_slot(): void
     {
         $this->login();
-        foreach (['a', 'b', 'c'] as $id) {
-            $this->save($id, withAudio: false)->assertCreated();
+        for ($i = 1; $i <= 7; $i++) {
+            $this->save("rec-$i", withAudio: false)->assertCreated();
         }
-        $this->deleteJson('/api/recordings/a')->assertNoContent();
+        $this->deleteJson('/api/recordings/rec-1')->assertNoContent();
 
-        $this->save('d', withAudio: false)->assertCreated();
+        $this->save('rec-8', withAudio: false)->assertCreated();
     }
 
     public function test_users_are_isolated(): void

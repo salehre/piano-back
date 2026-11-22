@@ -108,7 +108,7 @@ class RecordingRulesTest extends TestCase
 
     public function test_plan_recording_limits_match_the_frontend(): void
     {
-        $this->assertSame(3, PlanRules::recordingLimit(false));
+        $this->assertSame(7, PlanRules::recordingLimit(false));
         $this->assertSame(30, PlanRules::recordingLimit(true));
     }
 }
