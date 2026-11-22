@@ -28,6 +28,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // پیامک تأیید/بازیابی. SMS_DRIVER=log فقط برای توسعه‌ست (کد توی لاگ نوشته می‌شه)
+    'sms' => [
+        'driver' => env('SMS_DRIVER', 'log'),
+        'kavenegar' => [
+            'key' => env('KAVENEGAR_API_KEY'),
+            'template' => env('KAVENEGAR_TEMPLATE', 'verify'),
+        ],
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

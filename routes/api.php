@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PracticeController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,10 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->middleware('throttle:auth-register');
     Route::post('login', [AuthController::class, 'login'])->middleware('throttle:auth-login');
     Route::post('logout', [AuthController::class, 'logout']);
+
+    // بازیابی رمز با کد پیامکی (با موفقیت، مالکیت شماره هم تأیید می‌شه)
+    Route::post('password/forgot', [PasswordResetController::class, 'forgot'])->middleware('throttle:auth-forgot');
+    Route::post('password/reset', [PasswordResetController::class, 'reset'])->middleware('throttle:auth-reset');
 
     Route::put('profile', [ProfileController::class, 'update'])->middleware('auth:sanctum');
 });
