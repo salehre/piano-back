@@ -48,7 +48,7 @@ class PracticeTest extends TestCase
         $this->login();
         $res = $this->getJson('/api/practice')->assertOk()
             ->assertJsonPath('v', 1)
-            ->assertJsonPath('xp', 0.0)
+            ->assertJsonPath('xp', 0)
             ->assertJsonPath('goalMin', 10)
             ->assertJsonPath('reminder.on', false)
             ->assertJsonPath('reminder.time', '19:00')
@@ -82,7 +82,7 @@ class PracticeTest extends TestCase
 
         // ms کمتر و xp بیشتر: هر کدوم جدا بیشینه می‌شه
         $this->putJson('/api/practice/days/'.$day, ['ms' => 60000, 'xp' => 20])
-            ->assertOk()->assertJsonPath('day.ms', 120000)->assertJsonPath('day.xp', 20.0);
+            ->assertOk()->assertJsonPath('day.ms', 120000)->assertJsonPath('day.xp', 20);
 
         $this->assertDatabaseCount('practice_days', 1);
     }
@@ -120,7 +120,7 @@ class PracticeTest extends TestCase
     {
         $this->login();
         $this->putJson('/api/practice/meta', $this->meta(['xp' => 100.0]))->assertOk()
-            ->assertJsonPath('meta.xp', 100.0)
+            ->assertJsonPath('meta.xp', 100)
             ->assertJsonPath('meta.goalMin', 15)
             ->assertJsonPath('meta.badges.firstPractice', '2026-01-05T10:00:00.000Z')
             ->assertJsonPath('meta.counters.lessons', 2);
@@ -136,7 +136,7 @@ class PracticeTest extends TestCase
         ]))->assertOk();
 
         $this->getJson('/api/practice')->assertOk()
-            ->assertJsonPath('xp', 100.0)
+            ->assertJsonPath('xp', 100)
             ->assertJsonPath('goalMin', 5)
             ->assertJsonPath('badges.firstPractice', '2026-01-05T10:00:00.000Z')
             ->assertJsonPath('badges.streak3', '2026-01-07T10:00:00.000Z')
@@ -233,7 +233,7 @@ class PracticeTest extends TestCase
 
         // xp بیشینه می‌شه ولی تنظیمات حساب دست‌نخورده می‌مونه
         $this->getJson('/api/practice')->assertOk()
-            ->assertJsonPath('xp', 80.0)
+            ->assertJsonPath('xp', 80)
             ->assertJsonPath('goalMin', 15)
             ->assertJsonPath('reminder.on', true)
             ->assertJsonPath('reminder.time', '20:30');
@@ -287,7 +287,7 @@ class PracticeTest extends TestCase
 
         $this->login($this->makeUser('09120000001'));
         $res = $this->getJson('/api/practice')->assertOk()
-            ->assertJsonPath('xp', 0.0)
+            ->assertJsonPath('xp', 0)
             ->assertJsonPath('goalMin', 10);
         $this->assertStringContainsString('"days":{}', $res->getContent());
     }

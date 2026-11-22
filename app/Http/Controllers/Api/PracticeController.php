@@ -60,7 +60,7 @@ class PracticeController extends Controller
      */
     public function storeMeta(Request $request): JsonResponse
     {
-        $meta = PracticeRules::parseMeta($request->json()->all());
+        $meta = PracticeRules::parseMeta($this->withEmptyReminded($request->json()->all()));
         if ($meta === null) {
             return ApiError::response(AuthRules::ref('api.invalid'), 422);
         }
@@ -86,7 +86,7 @@ class PracticeController extends Controller
 
         $meta = null;
         if (($input['meta'] ?? null) !== null) {
-            $meta = PracticeRules::parseMeta($input['meta']);
+            $meta = PracticeRules::parseMeta($this->withEmptyReminded($input['meta']));
             if ($meta === null) {
                 return ApiError::response(AuthRules::ref('api.invalid'), 422);
             }
@@ -114,6 +114,19 @@ class PracticeController extends Controller
         }
 
         return response()->json(['merged' => count($valid) + ($meta !== null ? 1 : 0), 'skipped' => $skipped]);
+    }
+
+    /**
+     * ConvertEmptyStringsToNull لاراول «reminded: ''» رو توی بدنه‌ی JSON هم null می‌کنه، ولی برای این فیلد
+     * خالی ('') یعنی «هیچ‌وقت یادآور نشون داده نشده» و فرانت برای کاربر تازه همیشه همین رو می‌فرسته.
+     */
+    private function withEmptyReminded(mixed $meta): mixed
+    {
+        if (is_array($meta) && array_key_exists('reminded', $meta) && $meta['reminded'] === null) {
+            $meta['reminded'] = '';
+        }
+
+        return $meta;
     }
 
     /**
