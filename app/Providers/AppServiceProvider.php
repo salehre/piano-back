@@ -45,6 +45,13 @@ class AppServiceProvider extends ServiceProvider
         // تأیید کد و رمز جدید؛ حدس‌های اشتباه هر کد جداگانه (۵ بار) محدود می‌شن، این سقف کلیه
         RateLimiter::for('auth-reset', fn (Request $request) => Limit::perMinute(10)->by((string) $request->ip()));
 
+        // فرم‌های عمومی: عضویت در باشگاه ۱۰ بار و پیام تماس ۵ بار در ساعت برای هر IP
+        RateLimiter::for('club-join', fn (Request $request) => Limit::perHour(10)->by((string) $request->ip()));
+        RateLimiter::for('contact', fn (Request $request) => Limit::perHour(5)->by((string) $request->ip()));
+
+        // آپلود ضبط (فایل صدا حجیمه): ۱۰ بار در دقیقه برای هر کاربر
+        RateLimiter::for('recordings-upload', fn (Request $request) => Limit::perMinute(10)->by((string) ($request->user()?->id ?? $request->ip())));
+
         RateLimiter::for('auth-register', fn (Request $request) => Limit::perHour(10)->by((string) $request->ip()));
 
         // داده‌ی کاربر وارد‌شده (امتیاز، علاقه‌مندی، آهنگ‌ها): ۳۰۰ درخواست در دقیقه برای هر کاربر

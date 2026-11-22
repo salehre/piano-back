@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\ClubController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\LearningController;
 use App\Http\Controllers\Api\LibraryController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PracticeController;
 use App\Http\Controllers\Api\ProgressController;
+use App\Http\Controllers\Api\RecordingController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -27,6 +30,10 @@ Route::prefix('auth')->group(function () {
     Route::put('profile', [ProfileController::class, 'update'])->middleware('auth:sanctum');
 });
 
+// عمومی (بدون ورود): عضویت در باشگاه و فرم تماس
+Route::post('club/join', [ClubController::class, 'join'])->middleware('throttle:club-join');
+Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:contact');
+
 // داده‌ی کاربر وارد‌شده
 Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
     // امتیاز آهنگ‌ها
@@ -37,6 +44,14 @@ Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
     // علاقه‌مندی‌ها
     Route::get('favorites', [FavoriteController::class, 'index']);
     Route::patch('favorites', [FavoriteController::class, 'update']);
+
+    // ضبط‌ها (رویدادها + صدای WAV)
+    Route::get('recordings', [RecordingController::class, 'index']);
+    Route::post('recordings', [RecordingController::class, 'store'])->middleware('throttle:recordings-upload');
+    Route::get('recordings/{id}', [RecordingController::class, 'show'])->where('id', '[A-Za-z0-9-]{1,64}');
+    Route::get('recordings/{id}/audio', [RecordingController::class, 'audio'])->where('id', '[A-Za-z0-9-]{1,64}');
+    Route::patch('recordings/{id}', [RecordingController::class, 'rename'])->where('id', '[A-Za-z0-9-]{1,64}');
+    Route::delete('recordings/{id}', [RecordingController::class, 'destroy'])->where('id', '[A-Za-z0-9-]{1,64}');
 
     // پلن (رایگان / پریمیوم) و دوره‌ی آزمایشی
     Route::get('plan', [PlanController::class, 'show']);

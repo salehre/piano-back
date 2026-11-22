@@ -18,6 +18,11 @@ final class PlanRules
 
     public const SOURCES = ['trial', 'purchase'];
 
+    /** سقف تعداد ضبط‌های ذخیره‌شده؛ همون limits.recordings توی utils/plans.ts فرانت */
+    public const RECORDINGS_FREE = 3;
+
+    public const RECORDINGS_PREMIUM = 30;
+
     /** @param  array{source: string, expiresAt: DateTimeImmutable, trialUsed: bool}|null  $state */
     public static function isPremium(?array $state, DateTimeImmutable $now): bool
     {
@@ -60,5 +65,10 @@ final class PlanRules
     public static function trialExpiry(DateTimeImmutable $now): DateTimeImmutable
     {
         return $now->modify('+'.self::TRIAL_DAYS.' days');
+    }
+
+    public static function recordingLimit(bool $premium): int
+    {
+        return $premium ? self::RECORDINGS_PREMIUM : self::RECORDINGS_FREE;
     }
 }
