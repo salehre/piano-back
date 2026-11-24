@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\Concerns\ActsAsSpa;
 use Tests\TestCase;
 
@@ -54,6 +55,7 @@ class ContactTest extends TestCase
         ];
 
         foreach ($bad as $override) {
+            Cache::flush();
             $this->postJson('/api/contact', $this->payload($override))
                 ->assertStatus(422)
                 ->assertJsonPath('error.key', 'api.invalid');
