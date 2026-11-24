@@ -40,6 +40,6 @@ final class OtpRules
     {
         return preg_match('/^\d{'.self::LENGTH.'}$/D', self::normalizeCode($value)) === 1
             ? null
-            : AuthRules::ref('auth.validation.codeInvalid');
+            : AuthRules::ref('auth.validation.codeRequired', ['length' => self::LENGTH]);
     }
 }

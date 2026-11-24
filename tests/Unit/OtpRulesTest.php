@@ -34,7 +34,9 @@ class OtpRulesTest extends TestCase
     public function test_code_validation_rejects_bad_codes(): void
     {
         foreach (['', '12345', '1234567', 'abcdef', '12 3456', "123456\n7"] as $bad) {
-            $this->assertSame('auth.validation.codeInvalid', OtpRules::validateCode($bad)['key'] ?? null, "should reject: $bad");
+            $error = OtpRules::validateCode($bad);
+            $this->assertSame('auth.validation.codeRequired', $error['key'] ?? null, "should reject: $bad");
+            $this->assertSame(6, $error['params']['length'] ?? null);
         }
     }
 }

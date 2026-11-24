@@ -113,7 +113,7 @@ class PasswordResetTest extends TestCase
         $wrong = $this->lastCode() === '000000' ? '111111' : '000000';
 
         $this->postJson('/api/auth/password/reset', ['phone' => '09123456789', 'code' => $wrong, 'password' => 'newpass456'])
-            ->assertStatus(422)->assertJsonPath('error.key', 'auth.errors.codeIncorrect');
+            ->assertStatus(422)->assertJsonPath('error.key', 'auth.errors.wrongCode');
 
         $this->assertTrue(Hash::check('oldpass123', $user->fresh()->password));
         $this->assertNull($user->fresh()->phone_verified_at);
@@ -128,7 +128,7 @@ class PasswordResetTest extends TestCase
 
         for ($i = 0; $i < 4; $i++) {
             $this->postJson('/api/auth/password/reset', ['phone' => '09123456789', 'code' => $wrong, 'password' => 'newpass456'])
-                ->assertStatus(422)->assertJsonPath('error.key', 'auth.errors.codeIncorrect');
+                ->assertStatus(422)->assertJsonPath('error.key', 'auth.errors.wrongCode');
         }
         // حدس پنجم کد رو باطل می‌کنه؛ بعدش کد درست هم کار نمی‌کنه
         $this->postJson('/api/auth/password/reset', ['phone' => '09123456789', 'code' => $wrong, 'password' => 'newpass456'])
@@ -146,7 +146,7 @@ class PasswordResetTest extends TestCase
         $this->postJson('/api/auth/password/reset', ['phone' => '09123456789', 'code' => $code, 'password' => 'short'])
             ->assertStatus(422);
         $this->postJson('/api/auth/password/reset', ['phone' => '09123456789', 'code' => '12ab', 'password' => 'newpass456'])
-            ->assertStatus(422)->assertJsonPath('error.key', 'auth.validation.codeInvalid');
+            ->assertStatus(422)->assertJsonPath('error.key', 'auth.validation.codeRequired');
 
         $this->postJson('/api/auth/password/reset', ['phone' => '09123456789', 'code' => $code, 'password' => 'newpass456'])
             ->assertOk();
