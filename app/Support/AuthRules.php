@@ -253,7 +253,7 @@ final class AuthRules
     /**
      * مقادیر تمیز برای ذخیره (بعد از validateProfile).
      *
-     * @return array{display_name: string, email: ?string, avatar: ?string, national_id: ?string, country: ?string, address: ?string, years_playing: ?int}
+     * @return array{display_name: string, email: ?string, national_id: ?string, country: ?string, address: ?string, years_playing: ?int}
      */
     public static function normalizeProfile(array $p): array
     {
@@ -262,7 +262,6 @@ final class AuthRules
         return [
             'display_name' => self::jsTrim($p['displayName']),
             'email' => $orNull(self::jsTrim($p['email'])),
-            'avatar' => $orNull($p['avatar']),
             'national_id' => $orNull(self::jsTrim(self::normalizeDigits($p['nationalId']))),
             'country' => $orNull(self::jsTrim($p['country'])),
             'address' => $orNull(self::jsTrim($p['address'])),

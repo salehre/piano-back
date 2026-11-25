@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable([
     'phone', 'password',
-    'display_name', 'email', 'avatar', 'national_id', 'country', 'address', 'years_playing',
+    'display_name', 'email', 'national_id', 'country', 'address', 'years_playing',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -42,12 +42,28 @@ class User extends Authenticatable
             'profile' => [
                 'displayName' => (string) $this->display_name,
                 'email' => (string) $this->email,
-                'avatar' => (string) $this->avatar,
+                'avatar' => $this->avatarUrl(),
                 'nationalId' => (string) $this->national_id,
                 'country' => (string) $this->country,
                 'address' => (string) $this->address,
                 'yearsPlaying' => $this->years_playing,
             ],
         ];
+    }
+
+    /** آدرس endpoint عکس پروفایل؛ باید همون آدرسی باشه که مرورگر به بک‌اند می‌زنه (APP_URL) */
+    public static function avatarEndpoint(): string
+    {
+        return rtrim((string) config('app.url'), '/').'/api/profile/avatar';
+    }
+
+    /** لینک عکس پروفایل (با نسخه برای کش مرورگر) یا رشته‌ی خالی */
+    public function avatarUrl(): string
+    {
+        if ($this->avatar_path === null || $this->avatar_path === '') {
+            return '';
+        }
+
+        return self::avatarEndpoint().'?v='.pathinfo($this->avatar_path, PATHINFO_FILENAME);
     }
 }

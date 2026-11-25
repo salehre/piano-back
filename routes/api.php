@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PracticeController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Api\RecordingController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\AvatarController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -32,11 +33,17 @@ Route::prefix('auth')->group(function () {
 
 // عمومی (بدون ورود): عضویت در باشگاه و فرم تماس
 Route::post('club/join', [ClubController::class, 'join'])->middleware('throttle:club-join');
+Route::get('club/confirm/{id}/{signature}', [ClubController::class, 'confirm'])
+    ->where(['id' => '\d+', 'signature' => '[a-f0-9]{64}'])->middleware('throttle:30,1');
+Route::get('club/unsubscribe/{id}/{signature}', [ClubController::class, 'unsubscribe'])
+    ->where(['id' => '\d+', 'signature' => '[a-f0-9]{64}'])->middleware('throttle:30,1');
+
 Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:contact');
 
 // داده‌ی کاربر وارد‌شده
 Route::middleware(['auth:sanctum', 'throttle:user-data'])->group(function () {
     // امتیاز آهنگ‌ها
+    Route::get('profile/avatar', [AvatarController::class, 'show']);
     Route::get('progress/scores', [ProgressController::class, 'index']);
     Route::put('progress/scores', [ProgressController::class, 'store']);
     Route::post('progress/scores/merge', [ProgressController::class, 'merge']);

@@ -34,7 +34,10 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         // lookup می‌گه شماره حساب داره یا نه؛ برای جلوگیری از پیمایش انبوه شماره‌ها محدودش می‌کنیم
-        RateLimiter::for('auth-lookup', fn (Request $request) => Limit::perMinute(20)->by((string) $request->ip()));
+        RateLimiter::for('auth-lookup', fn (Request $request) => [
+            Limit::perMinute(10)->by((string) $request->ip()),
+            Limit::perHour(60)->by('lookup-hour|'.$request->ip()),
+        ]);
 
         // درخواست کد پیامکی: ۵ بار در ساعت برای هر شماره و ۱۰ بار در ساعت برای هر IP (هزینه‌ی پیامک)
         RateLimiter::for('auth-forgot', fn (Request $request) => [

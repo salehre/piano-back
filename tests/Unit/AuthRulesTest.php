@@ -103,7 +103,7 @@ class AuthRulesTest extends TestCase
             'country' => '', 'address' => ' x ', 'yearsPlaying' => 3.0,
         ]);
         $this->assertSame(
-            ['display_name' => 'Sara', 'email' => 'a@b.co', 'avatar' => null, 'national_id' => '0013542419', 'country' => null, 'address' => 'x', 'years_playing' => 3],
+            ['display_name' => 'Sara', 'email' => 'a@b.co', 'national_id' => '0013542419', 'country' => null, 'address' => 'x', 'years_playing' => 3],
             $n,
         );
     }
