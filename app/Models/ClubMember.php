@@ -8,5 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['email'])]
 class ClubMember extends Model
 {
-    //
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return ['confirmed_at' => 'datetime'];
+    }
 }
